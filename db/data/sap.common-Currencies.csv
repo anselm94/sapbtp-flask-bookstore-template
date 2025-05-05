@@ -1,0 +1,12 @@
+code;symbol;name;descr;minorUnit
+EUR;€;Euro;European Euro;100
+USD;$;US Dollar;United States Dollar;100
+CAD;$;Canadian Dollar;Canadian Dollar;100
+AUD;$;Australian Dollar;Australian Dollar;100
+GBP;£;British Pound;Great Britain Pound;100
+ILS;₪;Shekel;Israeli New Shekel;100
+INR;₹;Rupee;Indian Rupee;100
+QAR;﷼;Riyal;Katar Riyal;100
+SAR;﷼;Riyal;Saudi Riyal;100
+JPY;¥;Yen;Japanese Yen;100
+CNY;¥;Yuan;Chinese Yuan Renminbi;10
