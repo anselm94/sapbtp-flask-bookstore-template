@@ -177,6 +177,7 @@ mta_archives/
 # Misc
 .DS_Store
 gen
+default-env.json
 
 # Node
 node_modules/
