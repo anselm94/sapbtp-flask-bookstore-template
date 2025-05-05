@@ -1,0 +1,16 @@
+{
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.sapbtp-flask-bookstore-admin",
+      "description": "Bookstore Admin"
+    }
+  ],
+  "attributes": [],
+  "role-templates": [
+    {
+      "name": "sapbtp-flask-bookstore-admin",
+      "scope-references": ["$XSAPPNAME.sapbtp-flask-bookstore-admin"],
+      "description": "SAP BTP Flask Bookstore Admin"
+    }
+  ]
+}
