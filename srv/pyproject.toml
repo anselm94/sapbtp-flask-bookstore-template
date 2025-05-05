@@ -1,0 +1,31 @@
+[project]
+name = "sapbtp-flask-bookstore-srv"
+version = "0.1.0"
+description = "A sample Flask Bookstore application for SAP BTP"
+authors = [{ name = "Merbin J Anselm", email = "merbin.j.anselm@sap.com" }]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = "~=3.9"
+dependencies = [
+    "flask (>=3.1.0,<4.0.0)",            # Flask web framework
+    "flask-login (>=0.6.3,<0.7.0)",      # Flask extension for user session management
+    "flask-sqlalchemy (>=3.1.1,<4.0.0)", # Flask extension for SQLAlchemy
+    "sqlalchemy-hana (>=3.0.2,<4.0.0)",  # SQLAlchemy dialect for HANA
+    "hdbcli (>=2.24.24,<3.0.0)",         # HANA driver
+    "cfenv (>=0.5.3,<0.6.0)",            # CF environment variables
+    "python-dotenv (>=1.1.0,<2.0.0)",    # Load environment variables from .env file (development)
+    "sap-cf-logging (>=4.2.7,<5.0.0)",   # SAP CF logging
+    "sap-xssec (>=4.2.2,<5.0.0)",        # XSUAA client for authn & authz
+    "gunicorn (>=23.0.0,<24.0.0)",       # WSGI server for production
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.9.0,<2.0.0" # Plugin for exporting dependencies as `requirements.txt`
