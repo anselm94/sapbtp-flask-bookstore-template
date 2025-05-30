@@ -2,13 +2,18 @@ _schema-version: 3.3.0
 ID: sapbtp-flask-bookstore
 version: 1.0.0
 description: A sample Flask webserver deployed on SAP BTP integrating XSUAA for authn & authz, with HANA integration via SQLAlchemy
+
 parameters:
   enable-parallel-deployments: true
+  deploy_mode: html5-repo
+
 build-parameters:
   before-all:
     - builder: custom
       commands:
         - npm ci
+        - npm ci --prefix app/flaskbookstore
+        - npm ci --prefix app/router
         - npm run build
 
 modules:
@@ -51,6 +56,60 @@ modules:
     requires:
       - name: sapbtp-flask-bookstore-db
 
+  ### HTML5 APP DEPLOYER MODULE ###
+  - name: sapbtp-flask-bookstore-app-deployer
+    type: com.sap.application.content
+    path: gen
+    requires:
+      - name: sapbtp-flask-bookstore-html5-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: app/
+      requires:
+        - name: sapbtp-flask-bookstore-flaskbookstore-app
+          artifacts:
+            - flaskbookstore.zip
+          target-path: app/
+
+  ### APPLICATION ROUTER MODULE ###
+  - name: sapbtp-flask-bookstore
+    type: approuter.nodejs
+    path: app/router
+    parameters:
+      keep-existing-routes: true
+      disk-quota: 256M
+      memory: 256M
+    properties:
+      COOKIE_BACKWARD_COMPATIBILITY: true
+    requires:
+      - name: sapbtp-flask-bookstore-auth
+      - name: sapbtp-flask-bookstore-html5-runtime
+      - name: sapbtp-flask-bookstore-destination
+      - name: sapbtp-flask-bookstore-logging
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api # must be used in xs-app.json as well
+          url: ~{srv-url}
+          forwardAuthToken: true
+    provides:
+      - name: app-api
+        properties:
+          app-protocol: ${protocol}
+          app-uri: ${default-uri}
+
+  ### HTML5 APP CONTENT: Bookstore UI ###
+  - name: sapbtp-flask-bookstore-flaskbookstore-app
+    type: html5
+    path: app/flaskbookstore
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm run build
+      supported-platforms: []
+
 ### RESOURCES ###
 resources:
   - name: sapbtp-flask-bookstore-auth
@@ -62,6 +121,11 @@ resources:
       config:
         xsappname: sapbtp-flask-bookstore-sample-${space}
         tenant-mode: dedicated
+        role-collections:
+          - name: "sapbtp-flask-bookstore-admin-${space}"
+            description: SAP BTP Flask Bookstore Admin
+            role-template-references:
+              - $XSAPPNAME.sapbtp-flask-bookstore-admin
 
   - name: sapbtp-flask-bookstore-db
     type: org.cloudfoundry.managed-service
@@ -74,3 +138,42 @@ resources:
     parameters:
       service: application-logs
       service-plan: lite
+
+  - name: sapbtp-flask-bookstore-html5-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
+
+  - name: sapbtp-flask-bookstore-html5-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+
+  - name: sapbtp-flask-bookstore-destination
+    type: org.cloudfoundry.managed-service
+    requires:
+      - name: srv-api
+    parameters:
+      service: destination
+      service-plan: lite
+      config:
+        version: 1.0.0
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: sapbtp-flask-bookstore-srv
+                URL: ~{srv-api/srv-url}
+                Authentication: NoAuthentication
+                Type: HTTP
+                ProxyType: Internet
+                HTML5.ForwardAuthToken: true
+                HTML5.DynamicDestination: true
+              - Name: ui5
+                URL: https://ui5.sap.com
+                Authentication: NoAuthentication
+                Type: HTTP
+                ProxyType: Internet

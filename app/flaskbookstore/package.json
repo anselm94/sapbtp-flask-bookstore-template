@@ -1,0 +1,25 @@
+{
+  "name": "flaskbookstore",
+  "version": "0.0.1",
+  "description": "An SAP Fiori application.",
+  "keywords": [
+    "ui5",
+    "openui5",
+    "sapui5"
+  ],
+  "main": "webapp/index.html",
+  "devDependencies": {
+    "@sap/ux-ui5-tooling": "^1.17.4",
+    "@ui5/cli": "^4.0.15",
+    "ui5-task-zipper": "^3.4.1"
+  },
+  "scripts": {
+    "start": "fiori run --open \"index.html?sap-ui-xx-viewCache=false\"",
+    "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
+    "deploy": "fiori verify",
+    "deploy-config": "fiori add deploy-config",
+    "start-noflp": "fiori run --open ",
+    "start-variants-management": "fiori run --open \"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\""
+  },
+  "sapuxLayer": "CUSTOMER_BASE"
+}
