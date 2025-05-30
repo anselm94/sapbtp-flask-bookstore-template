@@ -6,7 +6,7 @@ if [ ! -f .env ]; then
 fi
 
 # Retrieve environment properties and extract the `VCAP_SERVICES` JSON
-VCAP_SERVICES_JSON=$(cf curl "/v2/apps/$(cf app --guid $APP_NAME)/env" | jq -r '.system_env_json.VCAP_SERVICES')
+VCAP_SERVICES_JSON=$(cf curl "/v2/apps/$(cf app --guid $APP_NAME)/env" | jq -rj '.system_env_json.VCAP_SERVICES')
 
 # Remove newlines from the JSON string
 VCAP_SERVICES_JSON=$(echo "$VCAP_SERVICES_JSON" | tr -d '\n')

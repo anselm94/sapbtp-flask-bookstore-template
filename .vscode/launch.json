@@ -20,7 +20,11 @@
       "type": "debugpy",
       "request": "launch",
       "module": "flask",
-      "env": { "FLASK_ENV": "MIGRATION", "FLASK_APP": "app.py", "FLASK_DEBUG": "1" },
+      "env": {
+        "FLASK_ENV": "MIGRATION",
+        "FLASK_APP": "app.py",
+        "FLASK_DEBUG": "1"
+      },
       "args": ["db", "migrate", "-m 'Initial migration'"],
       "cwd": "${workspaceFolder}/srv",
       "justMyCode": false,

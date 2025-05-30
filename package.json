@@ -5,7 +5,6 @@
   "repository": "",
   "private": true,
   "author": "merbin.j.anselm@sap.com",
-  "workspaces": [],
   "license": "MIT",
   "scripts": {
     "build": "cds build --production"

@@ -46,6 +46,6 @@ def create_app():
     from . import routes
 
     # register routes via blueprint
-    app.register_blueprint(routes.bp)
+    app.register_blueprint(routes.bp, url_prefix="/")
 
     return app
