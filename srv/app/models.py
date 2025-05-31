@@ -1,9 +1,9 @@
 from typing import Optional
 from datetime import date, datetime
+from abc import ABC, abstractmethod
 
 from sqlalchemy import (
     Integer,
-    Column,
     String,
     DateTime,
     ForeignKey,
@@ -17,6 +17,7 @@ from sqlalchemy.orm import mapped_column, relationship, Mapped
 from sap import xssec
 
 from app import db_manager
+from config import UserConfig
 
 
 ###################
@@ -24,7 +25,83 @@ from app import db_manager
 ###################
 
 
-class User:
+class BaseUser(ABC):
+    """
+    Abstract base class for user types.
+    """
+
+    @abstractmethod
+    def is_authenticated(self) -> bool:
+        """
+        Checks if the user is authenticated
+        """
+        pass
+
+    @abstractmethod
+    def is_active(self) -> bool:
+        """
+        Checks if the user is active
+        """
+        pass
+
+    @abstractmethod
+    def is_anonymous(self) -> bool:
+        """
+        Checks if the user is a technical/system user or not
+        """
+        pass
+
+    @abstractmethod
+    def check_scope(self, scope: str) -> bool:
+        """
+        Checks if the user has the specified scope
+        :param scope: The scope to check
+        :return: True if the user has the scope, False otherwise
+        """
+        pass
+
+    @abstractmethod
+    def get_id(self) -> str:
+        """
+        Returns the unique identifier of the user
+        :return: Unique identifier of the user
+        """
+        pass
+
+
+class BasicUser(BaseUser):
+    """
+    User class representing the authenticated user in the application
+    using Flask-Login to represent the current user session, once the
+    user is authenticated via basic authentication.
+
+    See `flask-login` docs: https://flask-login.readthedocs.io/en/latest/#your-user-class
+    """
+
+    def __init__(self, user_id: str, user_config: UserConfig):
+        self.user_id = user_id
+        self.user_config = user_config
+
+    def is_authenticated(self) -> bool:
+        return self.user_config is not None
+
+    def is_active(self) -> bool:
+        return self.user_config is not None
+
+    def is_anonymous(self) -> bool:
+        return self.user_config is None
+
+    def check_scope(self, role: str) -> bool:
+        return role in self.user_config.get("roles", [])
+
+    def get_id(self) -> str:
+        return self.user_id
+
+    def __repr__(self):
+        return f"<BasicUser user_id={self.user_id}, " f"user_config={self.user_config}>"
+
+
+class XsuaaUser(BaseUser):
     """
     User class representing the authenticated user in the application
     using Flask-Login to represent the current user session.
@@ -39,29 +116,15 @@ class User:
         self.security_context = xssec_security_context
 
     def is_authenticated(self) -> bool:
-        """
-        Checks if the user is authenticated
-        """
         return self.security_context is not None
 
     def is_active(self) -> bool:
-        """
-        Checks if the user is active
-        """
         return self.security_context is not None
 
     def is_anonymous(self) -> bool:
-        """
-        Checks if the user is a technical/system user or not
-        """
         return self.email() is None
 
     def check_scope(self, scope: str) -> bool:
-        """
-        Checks if the user has the specified scope
-        :param scope: The scope to check
-        :return: True if the user has the scope, False otherwise
-        """
         return self.security_context.check_scope(scope)
 
     def get_id(self) -> str:
@@ -81,9 +144,11 @@ class User:
 
     def __repr__(self):
         return (
-            f"User(email={self.email}, logon_name={self.logon_name}, "
-            f"given_name={self.given_name}, family_name={self.family_name}, "
-            f"client_id={self.client_id}, subaccount_id={self.subaccount_id})"
+            f"<XsuaaUser client_id={self.client_id()}, "
+            f"subaccount_id={self.subaccount_id()}, "
+            f"email={self.email()}, "
+            f"logon_name={self.logon_name()}, "
+            f"security_context={self.security_context}>"
         )
 
 

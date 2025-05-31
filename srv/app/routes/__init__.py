@@ -1,15 +1,16 @@
-from typing import Dict
-
 from flask import current_app, jsonify, Blueprint, Request
 from flask_login import login_required
 from werkzeug import exceptions
 
-from app.utils.auth_utils import roles_required
 from app import login_manager
-from app.utils.auth_utils import get_xssec_security_context
+from app.utils.auth_utils import (
+    get_basicuser_from_request,
+    get_xsuaauser_from_request,
+    roles_required,
+)
 from app.services import books_service
-from app.models import User
 from app.utils.heathcheck_utils import run_health_check
+from app.models import BaseUser
 
 #################
 ### CALLBACKS ###
@@ -17,14 +18,16 @@ from app.utils.heathcheck_utils import run_health_check
 
 
 @login_manager.request_loader
-def load_user_from_request(request: Request):
+def load_user_from_request(request: Request) -> BaseUser:
     """
-    Load the user from the request using the SAP `xssec` security context.
+    Load the user from the request using the configured authentication type.
     """
-    security_context = get_xssec_security_context(current_app.config, request)
-
-    user = User(security_context) if security_context else None
-    return user
+    if current_app.config.get("AUTH_TYPE") == "basic":
+        return get_basicuser_from_request(current_app.config, request)
+    elif current_app.config.get("AUTH_TYPE") == "xsuaa":
+        return get_xsuaauser_from_request(current_app.config, request)
+    else:
+        return None
 
 
 @login_manager.unauthorized_handler
