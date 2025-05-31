@@ -3,6 +3,7 @@ from typing import TypedDict, Dict, Literal
 from sqlalchemy import text
 
 from app import db_manager
+from config import Config
 
 db = db_manager.db
 
@@ -24,7 +25,7 @@ class HealthCheckStatus(ComponentHealthCheckStatus):
     components: Dict[str, ComponentHealthCheckStatus]
 
 
-def run_health_check() -> HealthCheckStatus:
+def run_health_check(config: Config) -> HealthCheckStatus:
     """
     Run the health check for the application.
 
@@ -34,7 +35,7 @@ def run_health_check() -> HealthCheckStatus:
     return HealthCheckStatus(
         status="UP",
         components={
-            "db": run_health_check_db(),
+            "db": run_health_check_db(config),
         },
     )
 
@@ -42,12 +43,13 @@ def run_health_check() -> HealthCheckStatus:
 ##############
 # COMPONENTS #
 ##############
-def run_health_check_db() -> ComponentHealthCheckStatus:
+def run_health_check_db(config: Config) -> ComponentHealthCheckStatus:
     """
     Run the health check for the database component
     """
+    # use SQLite/HANA specific query to check database connectivity
+    statement = "SELECT 1 FROM DUMMY" if config.get("DB_TYPE") == "hana" else "SELECT 1"
+
     return ComponentHealthCheckStatus(
-        status=(
-            "UP" if db.session.execute(text("SELECT 1 FROM DUMMY")).scalar() else "DOWN"
-        ),
+        status=("UP" if db.session.execute(text(statement)).scalar() else "DOWN"),
     )

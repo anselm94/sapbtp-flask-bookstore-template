@@ -50,7 +50,7 @@ def health_check():
     Health check endpoint to verify the service is running.
     """
     return (
-        jsonify(run_health_check()),
+        jsonify(run_health_check(current_app.config)),
         200,
     )
 

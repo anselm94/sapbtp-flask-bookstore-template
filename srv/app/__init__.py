@@ -30,8 +30,9 @@ def create_app():
     # initialize configuration
     config: Config = config_manager.get(os.getenv("FLASK_ENV") or "DEV")
 
-    # setup logging
-    flask_logging.init(app, config.LOGGING_LEVEL)
+    # setup logging if only in production - else logs become JSON formatted to read
+    if config.ENV == "PRODUCTION":
+        flask_logging.init(app, config.LOGGING_LEVEL)
 
     # load config
     app.config.from_object(config)
