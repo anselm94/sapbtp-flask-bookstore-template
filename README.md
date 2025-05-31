@@ -30,6 +30,9 @@ Welcome to the **SAP BTP Flask Starter App**! This repository is your one-stop s
 - **🚀 Gunicorn for Production**  
   Run your app with the high-performance [Gunicorn WSGI server](https://gunicorn.org/) in production.
 
+- **🩺 Health Check Endpoint**  
+  Monitor app and database liveliness via the `/health` endpoint.
+
 ---
 
 ## 🤔 **Why Use This Repository?**
@@ -96,6 +99,8 @@ Welcome to the **SAP BTP Flask Starter App**! This repository is your one-stop s
 7. **Test the API**
    - Use Postman or any API client to hit:  
      `http://127.0.0.1:5000/books` with OAuth2 'Client Credentials'.
+   - For health check, access:  
+     `http://127.0.0.1:5000/health` (no auth required).
 
 ---
 
@@ -103,25 +108,26 @@ Welcome to the **SAP BTP Flask Starter App**! This repository is your one-stop s
 
 ```plaintext
 sapbtp-flask-bookstore/
-├── db/                # CDS schema and data files
-│   ├── schema.cds     # Core Data Services (CDS) schema definition
-│   ├── data/          # Sample data for the database
-├── gen/               # Generated HANA artifacts
-├── srv/               # Flask application source code
-│   ├── app.py         # Entry point for the Flask application
-│   ├── config.py      # Configuration management for different environments
-│   ├── app/           # Application modules
-│   │   ├── database.py # Database connection and setup logic
-│   │   ├── models.py   # ORM models for database tables
-│   │   ├── routes/     # API route definitions
-│   │   │   ├── __init__.py # Route initialization
-│   │   ├── services/   # Business logic and service layer
+├── db/                          # CDS schema and data files
+│   ├── schema.cds               # Core Data Services (CDS) schema definition
+│   ├── data/                    # Sample data for the database
+├── gen/                         # Generated HANA artifacts
+├── srv/                         # Flask application source code
+│   ├── app.py                   # Entry point for the Flask application
+│   ├── config.py                # Configuration management for different environments
+│   ├── app/                     # Application modules
+│   │   ├── database.py          # Database connection and setup logic
+│   │   ├── models.py            # ORM models for database tables
+│   │   ├── routes/              # API route definitions
+│   │   │   ├── __init__.py      # Route initialization
+│   │   ├── services/            # Business logic and service layer
 │   │   │   ├── books_service.py # Service logic for book-related operations
-│   │   ├── utils/      # Utility functions for authentication and error handling
-│   │       ├── auth_utils.py # Authentication helper functions
-├── mta.yaml           # MTA deployment descriptor
-├── setup-env.sh       # Script to configure local environment
-└── README.md          # Project documentation
+│   ├── utils/                   # Utility functions for authentication and error handling
+│   │   ├── auth_utils.py        # Authentication helper functions
+|   │   ├── heathcheck_utils.py  # Healthcheck helper functions
+├── mta.yaml                     # MTA deployment descriptor
+├── setup-env.sh                 # Script to configure local environment
+└── README.md                    # Project documentation
 ```
 
 ---

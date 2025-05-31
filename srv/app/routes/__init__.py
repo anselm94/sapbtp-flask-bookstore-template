@@ -1,7 +1,7 @@
+from typing import Dict
+
 from flask import current_app, jsonify, Blueprint, Request
-
 from flask_login import login_required
-
 from werkzeug import exceptions
 
 from app.utils.auth_utils import roles_required
@@ -9,12 +9,12 @@ from app import login_manager
 from app.utils.auth_utils import get_xssec_security_context
 from app.services import books_service
 from app.models import User
-
-bp = Blueprint("routes", __name__)
+from app.utils.heathcheck_utils import run_health_check
 
 #################
 ### CALLBACKS ###
 #################
+
 
 @login_manager.request_loader
 def load_user_from_request(request: Request):
@@ -40,6 +40,28 @@ def unauthorized():
     }, 401
 
 
+#######################
+### ROUTES - COMMON ###
+#######################
+
+
+def health_check():
+    """
+    Health check endpoint to verify the service is running.
+    """
+    return (
+        jsonify(run_health_check()),
+        200,
+    )
+
+
+####################
+### ROUTES - BP1 ###
+####################
+
+bp = Blueprint("routes", __name__)
+
+
 @bp.errorhandler(exceptions.Forbidden)
 def handle_forbidden(e: exceptions.Forbidden):
     """
@@ -51,11 +73,6 @@ def handle_forbidden(e: exceptions.Forbidden):
             "message": e.description,
         }
     }, 403
-
-
-##############
-### ROUTES ###
-##############
 
 
 @bp.route("/books", methods=["GET"])

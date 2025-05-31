@@ -10,7 +10,7 @@
       "request": "launch",
       "module": "flask",
       "env": { "FLASK_ENV": "DEV", "FLASK_APP": "app.py", "FLASK_DEBUG": "1" },
-      "args": ["run", "--no-debugger", "--no-reload"],
+      "args": ["run"],
       "cwd": "${workspaceFolder}/srv",
       "jinja": true,
       "autoStartBrowser": false

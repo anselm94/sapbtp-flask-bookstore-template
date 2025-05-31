@@ -45,6 +45,13 @@ def create_app():
     # dynamic imports since `db_manager` is not yet initialized
     from . import routes
 
+    app.add_url_rule(
+        "/health",
+        view_func=routes.health_check,
+        methods=["GET"],
+        endpoint="health_check",
+    )
+
     # register routes via blueprint
     app.register_blueprint(routes.bp, url_prefix="/")
 

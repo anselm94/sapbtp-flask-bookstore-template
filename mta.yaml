@@ -21,6 +21,8 @@ modules:
       memory: 512M
       disk-quota: 512M
       buildpack: python_buildpack
+      health-check-type: http
+      health-check-http-endpoint: /health
     properties:
       FLASK_ENV: PRODUCTION
       FLASK_APP: app.py
