@@ -98,7 +98,7 @@ Welcome to the **SAP BTP Flask Starter App**! This repository is your one-stop s
 
 7. **Test the API**
    - Use Postman or any API client to hit:  
-     `http://127.0.0.1:5000/books` with OAuth2 'Client Credentials'.
+     `http://127.0.0.1:5000/api/v1/books` with OAuth2 'Client Credentials'.
    - For health check, access:  
      `http://127.0.0.1:5000/health` (no auth required).
 

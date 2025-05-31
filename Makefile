@@ -2,7 +2,17 @@ CF_API = https://api.cf.us10.hana.ondemand.com
 CF_ORG = S4HANAD@S_sap-build-training-hcd2uswp
 CF_SPACE = dev
 
-.PHONY: login build deploy undeploy
+.PHONY: update login build deploy undeploy
+
+update:
+	@echo "Upgrading the project NPM dependencies..."
+	npx npm-check-updates -u
+	npm install
+
+	@echo "Upgrading the project Python dependencies..."
+	cd srv
+	poetry update --lock && poetry install
+	cd ..
 
 login:
 	@echo "Logging into Cloud Foundry..."

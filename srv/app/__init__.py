@@ -53,6 +53,6 @@ def create_app():
     )
 
     # register routes via blueprint
-    app.register_blueprint(routes.bp, url_prefix="/")
+    app.register_blueprint(routes.bp, url_prefix="/api/v1")
 
     return app
