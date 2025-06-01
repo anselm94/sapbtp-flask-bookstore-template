@@ -2,7 +2,7 @@ CF_API = https://api.cf.us10.hana.ondemand.com
 CF_ORG = S4HANAD@S_sap-build-training-hcd2uswp
 CF_SPACE = dev
 
-.PHONY: update login build deploy undeploy
+.PHONY: update login build deploy undeploy lock-deps
 
 update:
 	@echo "Upgrading the project NPM dependencies..."
@@ -29,3 +29,10 @@ deploy:
 undeploy:
 	@echo "Undeploying from Cloud Foundry..."
 	cf undeploy sapbtp-flask-bookstore --delete-services
+
+lock-deps:
+	@echo "Locking dependencies..."
+	cd srv
+	poetry lock
+	poetry export -f requirements.txt --without-hashes > requirements.txt
+	cd ..

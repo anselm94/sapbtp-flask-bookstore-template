@@ -2,6 +2,7 @@ from typing import Optional
 from datetime import date, datetime
 from abc import ABC, abstractmethod
 
+from flask_login import UserMixin
 from sqlalchemy import (
     Integer,
     String,
@@ -14,8 +15,8 @@ from sqlalchemy import (
     UUID,
 )
 from sqlalchemy.orm import mapped_column, relationship, Mapped
-from sap import xssec
 
+from sap import xssec
 from app import db_manager
 from config import UserConfig
 
@@ -25,31 +26,10 @@ from config import UserConfig
 ###################
 
 
-class BaseUser(ABC):
+class BaseUser(UserMixin, ABC):
     """
     Abstract base class for user types.
     """
-
-    @abstractmethod
-    def is_authenticated(self) -> bool:
-        """
-        Checks if the user is authenticated
-        """
-        pass
-
-    @abstractmethod
-    def is_active(self) -> bool:
-        """
-        Checks if the user is active
-        """
-        pass
-
-    @abstractmethod
-    def is_anonymous(self) -> bool:
-        """
-        Checks if the user is a technical/system user or not
-        """
-        pass
 
     @abstractmethod
     def check_scope(self, scope: str) -> bool:
@@ -60,16 +40,8 @@ class BaseUser(ABC):
         """
         pass
 
-    @abstractmethod
-    def get_id(self) -> str:
-        """
-        Returns the unique identifier of the user
-        :return: Unique identifier of the user
-        """
-        pass
 
-
-class BasicUser(BaseUser):
+class BasicUser(UserMixin):
     """
     User class representing the authenticated user in the application
     using Flask-Login to represent the current user session, once the
@@ -79,7 +51,7 @@ class BasicUser(BaseUser):
     """
 
     def __init__(self, user_id: str, user_config: UserConfig):
-        self.user_id = user_id
+        self.id = user_id
         self.user_config = user_config
 
     def is_authenticated(self) -> bool:
@@ -95,13 +67,13 @@ class BasicUser(BaseUser):
         return role in self.user_config.get("roles", [])
 
     def get_id(self) -> str:
-        return self.user_id
+        return self.id
 
     def __repr__(self):
-        return f"<BasicUser user_id={self.user_id}, " f"user_config={self.user_config}>"
+        return f"<BasicUser user_id={self.id}, " f"user_config={self.user_config}>"
 
 
-class XsuaaUser(BaseUser):
+class XsuaaUser(UserMixin):
     """
     User class representing the authenticated user in the application
     using Flask-Login to represent the current user session.
