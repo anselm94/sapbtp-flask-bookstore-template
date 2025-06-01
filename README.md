@@ -47,6 +47,21 @@ Welcome to the **SAP BTP Flask Starter App**! This repository is your one-stop s
 
 ---
 
+## 🏁 **How to Use This Repository**
+
+This repository is a **template repository**. To start your own project based on this starter app:
+
+1. Click the green **"Use this template"** button at the top of the [GitHub repository page](https://github.com/anselm94/sapbtp-flask-bookstore-template).
+   !['Use this template' button in Github repository](./docs/step-usethistemplate.png)
+2. Choose **"Create a new repository"** and fill in your desired repository name and settings.
+3. Follow the [Getting Started](#getting-started) instructions below to set up your environment.
+
+> [!TIP]
+>
+> Using the template ensures you start with a clean commit history and can customize your project independently.
+
+---
+
 ## 🛠️ **Getting Started**
 
 ### **Pre-requisites**
