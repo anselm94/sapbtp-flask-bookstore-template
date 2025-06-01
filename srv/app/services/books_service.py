@@ -15,6 +15,7 @@ def get_books():
     log.info("Fetching books from the database...")
     books = db.session.execute(
         db.select(
+            Books.ID,
             Books.title,
             Books.descr,
             Books.stock,
@@ -24,7 +25,9 @@ def get_books():
             Authors.name.label("author_name"),
             Genres.name.label("genre"),
         )
-        .join(Books.author)
+        .join(Books.author)  # Explicit join to Authors
+        .join(Books.currency)  # Explicit join to Currencies
+        .join(Books.genre)  # Explicit join to Genres
         .order_by(Books.title)
     ).all()
     log.info(f"Fetched {len(books)} books from the database.")
@@ -35,6 +38,7 @@ def get_books():
 
     return [
         {
+            "id": book.ID,
             "title": book.title,
             "descr": book.descr,
             "stock": book.stock,
