@@ -187,3 +187,7 @@ node_modules/
 
 # SQLite db
 *.sqlite3*
+
+# Test
+*.lcov
+*.pth

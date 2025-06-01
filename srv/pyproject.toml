@@ -7,18 +7,25 @@ license = { text = "MIT" }
 readme = "README.md"
 requires-python = "~=3.9"
 dependencies = [
+    # Core
+    "python-dotenv (>=1.1.0,<2.0.0)",    # Load environment variables from .env file (development)
+    "sap-cf-logging (>=4.2.7,<5.0.0)",   # SAP CF logging
     "flask (>=3.1.0,<4.0.0)",            # Flask web framework
+    # Auth
     "flask-login (>=0.6.3,<0.7.0)",      # Flask extension for user session management
+    "sap-xssec (>=4.2.2,<5.0.0)",        # XSUAA client for authn & authz
+    # SQL 
     "flask-sqlalchemy (>=3.1.1,<4.0.0)", # Flask extension for SQLAlchemy
     "sqlalchemy-hana (>=3.0.2,<4.0.0)",  # SQLAlchemy dialect for HANA
     "hdbcli (>=2.24.24,<3.0.0)",         # HANA driver
+    # Production
     "cfenv (>=0.5.3,<0.6.0)",            # CF environment variables
-    "python-dotenv (>=1.1.0,<2.0.0)",    # Load environment variables from .env file (development)
-    "sap-cf-logging (>=4.2.7,<5.0.0)",   # SAP CF logging
-    "sap-xssec (>=4.2.2,<5.0.0)",        # XSUAA client for authn & authz
     "gunicorn (>=23.0.0,<24.0.0)",       # WSGI server for production
+    # Testing
+    "pytest (>=8.3.5,<9.0.0)",           # Testing framework
+    "pytest-flask (>=1.3.0,<2.0.0)",     # Flask testing utilities
+    "pytest-cov (>=6.1.1,<7.0.0)",       # Coverage reporting for tests
 ]
-
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -29,3 +36,6 @@ package-mode = false
 
 [tool.poetry.requires-plugins]
 poetry-plugin-export = ">=1.9.0,<2.0.0" # Plugin for exporting dependencies as `requirements.txt`
+
+[tool.pytest.ini_options]
+addopts = "--cov=app --cov-report term --cov-report html --cov-report lcov"

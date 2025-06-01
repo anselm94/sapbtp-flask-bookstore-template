@@ -20,7 +20,7 @@ class UserConfig(TypedDict):
     attr: dict
 
 
-class Config(object):
+class Config(dict):
     # Runtime
     ENV = "DEV"
 
